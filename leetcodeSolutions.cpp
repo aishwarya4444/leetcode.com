@@ -239,7 +239,7 @@ public:
            if(lb>=0)sum+=b[lb--]-48;
            if(sum%2==1)r='1'+r;
            else r='0'+r;
-           sum/=2;           
+           sum/=2;
         }
         if(sum)r='1'+r;
         return r;
@@ -356,7 +356,7 @@ If you were only permitted to complete at most one transaction (ie, buy one and 
 */
 /*
 http://www.leetcode.com/2010/11/best-time-to-buy-and-sell-stock.html
-http://www.leetcode.com/2010/04/hacking-google-interview-from-mit.html 
+http://www.leetcode.com/2010/04/hacking-google-interview-from-mit.html
 */
 class Solution {
 public:
@@ -482,6 +482,7 @@ return its level order traversal as:
   [15,7]
 ]
 */
+// Solution 1
 class Solution {
 public:
     vector<vector<int> > levelOrder(TreeNode *root) {
@@ -500,6 +501,33 @@ public:
                 _r.push_back(root->val);
             }
             swap(q,_q);
+            r.push_back(_r);
+            _r.clear();
+        }
+        return r;
+    }
+};
+// Solution 2
+class Solution {
+public:
+    vector<vector<int> > levelOrder(TreeNode *root) {
+        vector<vector<int> > r;
+        vector<int> _r;
+        queue<TreeNode *> q;
+        int n;
+        if(root)q.push(root);
+        while(q.size())
+        {
+            n=q.size();
+            while(n)
+            {
+                root=q.front();
+                q.pop();
+                if(root->left)q.push(root->left);
+                if(root->right)q.push(root->right);
+                _r.push_back(root->val);
+                n--;
+            }
             r.push_back(_r);
             _r.clear();
         }
@@ -574,30 +602,26 @@ Given the below binary tree,
       / \
      2   3
 
-Return 6. 
+Return 6.
 */
 class Solution {
 public:
-    TreeNode *sortedListToBST(ListNode *head) {
-        int n=0;
-        count(head,n);
-        return toBST(head, 0, n-1);
-    }
-    void count(ListNode *head, int &n)
+    int help(TreeNode *root, int &maxSum)
     {
-        if(!head)return;
-        while(head)n++,head=head->next;
+        if(!root)return 0;
+        int sum=root->val;
+        int leftMax=help(root->left,maxSum);
+        int rightMax=help(root->right,maxSum);
+        if(leftMax>0)sum+=leftMax;
+        if(rightMax>0)sum+=rightMax;
+        if(sum>maxSum)maxSum=sum;
+        return max(root->val,root->val+max(leftMax,rightMax));
     }
-    TreeNode *toBST(ListNode *&head, int l, int r)
-    {
-        if(l>r)return NULL;
-        int m=(l+r)>>1;
-        TreeNode *nodeL=toBST(head,l,m-1);
-        TreeNode *node=new TreeNode(head->val);
-        node->left=nodeL;
-        head=head->next;
-        node->right=toBST(head,m+1,r);
-        return node;
+    int maxPathSum(TreeNode *root) {
+        if(!root)return 0;
+        int maxSum=root->val;
+        help(root,maxSum);
+        return maxSum;
     }
 };
 
@@ -1671,13 +1695,13 @@ public:
 };
 
 /*
-Given a digit string, return all possible letter combinations that the number could represent. 
+Given a digit string, return all possible letter combinations that the number could represent.
 A mapping of digit to letters (just like on the telephone buttons) is given below.
- 
+
 Input:Digit string "23"
 Output: ["ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf"].
 Note:
-Although the above answer is in lexicographical order, your answer could be in any order you want. 
+Although the above answer is in lexicographical order, your answer could be in any order you want.
 */
 class Solution {
 public:
@@ -1760,7 +1784,7 @@ public:
         return s.substr(start,x);
     }
 };
-// Solution 2 [O(n) time :: Manacher’s algorithm]
+// Solution 2 [O(n) time :: Manacherâ€™s algorithm]
 class Solution {
 public:
     string longestPalindrome(string s) {
@@ -2044,26 +2068,25 @@ There are two sorted arrays A and B of size m and n respectively. Find the media
 // http://www.leetcode.com/2011/03/median-of-two-sorted-arrays.html
 // http://www.leetcode.com/2011/03/median-of-two-sorted-arrays.html#comment-1053
 // http://ideone.com/FtqjM
-// INCOMPLETE 
 class Solution {
 public:
-  double findMedian(int A[], int B[], int l, int r, int nA, int nB) {
-if (l > r) return findMedian(B, A, max(0, (nA+nB)/2-nA), min(nB, (nA+nB)/2), nB, nA);
-int i = (l+r)/2;
-int j = (nA+nB)/2 - i - 1;
-if (j >= 0 && A[i] < B[j]) return findMedian(A, B, i+1, r, nA, nB);
-else if (j < nB-1 && A[i] > B[j+1]) return findMedian(A, B, l, i-1, nA, nB);
-else {
-if ( (nA+nB)%2 == 1 ) return A[i];
-else if (i > 0) return (A[i]+max(B[j], A[i-1]))/2.0;
-else return (A[i]+B[j])/2.0;
-}
-}
-
-double findMedianSortedArrays(int A[], int n, int B[], int m) {
-if (n<m) return findMedian(A, B, 0, n-1, n, m);
-else return findMedian(B, A, 0, m-1, m, n);
-}
+    double findMedianSortedArrays(int A[], int m, int B[], int n) {
+        return help(A,m,B,n,max(0,(m-n)/2),min(m-1,(m+n)/2));
+    }
+    double help(int *a, int m, int *b, int n, int l, int r)
+    {
+        if(l>r)return help(b,n,a,m,max(0,(n-m)/2),min(n-1,(m+n)/2));
+        int i=(l+r)/2;
+        int j=(m+n)/2-i;
+        int ai=(i==m)?INT_MAX:a[i];
+        int bj=(j==n)?INT_MAX:b[j];
+        int ai_1=(i==0)?INT_MIN:a[i-1];
+        int bj_1=(j==0)?INT_MIN:b[j-1];
+        if(ai<bj_1)return help(a,m,b,n,i+1,r);
+        if(ai>bj)return help(a,m,b,n,l,i-1);
+        if((m+n)%2)return ai;
+        return (ai+max(ai_1,bj_1))/2.0;
+    }
 };
 
 /*
@@ -2186,7 +2209,7 @@ public:
             else if(l2)addAtEnd(&x,l2->val),l2=l2->next;
         }
         return x;
-        
+
     }
     void addAtEnd(ListNode **head, int val)
     {
@@ -2213,7 +2236,7 @@ public:
                 else head=l2,tail=l2;
                 l2=l2->next;
             }
-            
+
         }
         if(l1)
         {
@@ -2370,7 +2393,7 @@ public:
 /*
 N-Queens
 
-The n-queens puzzle is the problem of placing n queens on an n×n chessboard such that no two queens attack each other.
+The n-queens puzzle is the problem of placing n queens on an nÃ—n chessboard such that no two queens attack each other.
 
 Given an integer n, return all distinct solutions to the n-queens puzzle.
 
@@ -3478,6 +3501,31 @@ Note:
 Given m, n satisfy the following condition:
 1 <= m <= n <= length of list.
 */
+class Solution {
+public:
+    ListNode *reverseBetween(ListNode *head, int m, int n) {
+        if(!head || !head->next)return head;
+        ListNode *preTail=NULL, *curTail=NULL;
+        ListNode *preNode=NULL, *curNode=head, *node;
+        for(int i=1;i<=n;i++)
+        {
+            if(i==m-1)preTail=curNode;
+            if(i==m)curTail=curNode;
+            if(i>=m)
+            {
+                node=curNode->next;
+                curNode->next=preNode;
+                preNode=curNode;
+                curNode=node;
+            }
+            else curNode=curNode->next;
+        }
+        if(!preTail)head=preNode;
+        else preTail->next=preNode;
+        curTail->next=curNode;
+        return head;
+    }
+};
 
 /*
 Reverse Nodes in k-Group
@@ -3773,7 +3821,7 @@ public:
         }
         return false;
     }
-}; 
+};
 // Solution 2
 // works for both cases
 // (a) as asked in question [[1,3,5,7],[10,11,16,20],[23,30,34,50]]
@@ -4242,7 +4290,7 @@ public:
                 j>>=1;
                 k++;
             }
-            r.push_back(_r);            
+            r.push_back(_r);
         }
         return r;
     }
@@ -4313,9 +4361,9 @@ public:
                 j>>=1;
                 k++;
             }
-            if(find(r.begin(),r.end(),_r)==r.end())r.push_back(_r);            
+            if(find(r.begin(),r.end(),_r)==r.end())r.push_back(_r);
         }
-        return r;        
+        return r;
     }
 };
 // Solution 2 [recursion]
@@ -4355,9 +4403,9 @@ L: ["foo", "bar"]
 You should return the indices: [0,9].
 (order does not matter).
 */
-class Solution {  
-public:  
-    vector<int> findSubstring(string S, vector<string> &L) {  
+class Solution {
+public:
+    vector<int> findSubstring(string S, vector<string> &L) {
         vector<int> r;
         map<string,int> mL;
         map<string,int> m;
@@ -4378,7 +4426,7 @@ public:
             if(j==nL)r.push_back(i);
         }
         return r;
-    }  
+    }
 };
 
 /*
@@ -4909,8 +4957,8 @@ public:
         help(0,0,m,n,paths,obstacleGrid);
         return paths;
     }
-    void help(int r, int c, int m, int n, int &paths, vector<vector<int> > 
- 
+    void help(int r, int c, int m, int n, int &paths, vector<vector<int> >
+
 &obstacleGrid)
     {
         if(obstacleGrid[r][c])return;
@@ -4984,6 +5032,47 @@ Note: It is intended for the problem statement to be ambiguous. You should gathe
 */
 
 /*
+Valid Palindrome
+
+Given a string, determine if it is a palindrome, considering only alphanumeric characters and ignoring cases.
+
+For example,
+"A man, a plan, a canal: Panama" is a palindrome.
+"race a car" is not a palindrome.
+
+Note:
+Have you consider that the string might be empty? This is a good question to ask during an interview.
+
+For the purpose of this problem, we define empty string as valid palindrome.
+*/
+class Solution {
+public:
+    bool isPalindrome(string s) {
+        int N=s.size();
+        int l=0, r=N-1;
+        char lb, ub;
+        while(l<r)
+        {
+            lb=s[l]>=65 && s[l]<=90?s[l]+32:s[l];
+            ub=s[r]>=65 && s[r]<=90?s[r]+32:s[r];
+            if(!( (lb>=97 && lb<=122)||(lb>=48 && lb<=57) ))
+            {
+                l++;
+                continue;
+            }
+            if(!( (ub>=97 && ub<=122)||(ub>=48 && ub<=57) ))
+            {
+                r--;
+                continue;
+            }
+            if(lb!=ub)return false;
+            l++,r--;
+        }
+        return true;
+    }
+};
+
+/*
 Valid Parentheses
 
 Given a string containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.
@@ -5007,7 +5096,7 @@ public:
                 if(
                     (c=='(' && _c!=')')||
                     (c=='{' && _c!='}')||
-                    (c=='['j && _c!=']')
+                    (c=='[' && _c!=']')
                    )return false;
             }
         }
@@ -5121,6 +5210,23 @@ public:
         else return false;
     }
 };
+// Solution 3 [inorder O(n)]
+class Solution {
+public:
+    bool isValidBST(TreeNode *root) {
+        TreeNode *prev=NULL, *first=NULL;
+        inorder(root,prev,first);
+        return first?false:true;
+    }
+    void inorder(TreeNode *root, TreeNode *&prev, TreeNode *&first)
+    {
+        if(!root)return;
+        inorder(root->left,prev,first);
+        if(prev && prev->val>=root->val)first=prev;
+        prev=root;
+        inorder(root->right,prev,first);
+    }
+};
 
 /*
 Wildcard Matching
@@ -5165,6 +5271,36 @@ word = "ABCCED", -> returns true,
 word = "SEE", -> returns true,
 word = "ABCB", -> returns false.
 */
+class Solution {
+public:
+    bool exist(vector<vector<char> > &board, string word) {
+        int R=board.size(), C=R?board[0].size():0, L=word.size();
+        int r, c;
+        vector<vector<bool> > visited(R,vector<bool> (C,false));
+        for(r=0;r<R;r++)
+        {
+            for(c=0;c<C;c++)
+            {
+                if(help(board,word,visited,r,c,0,R,C,L))return true;
+            }
+        }
+        return false;
+    }
+    bool help(vector<vector<char> > &board, string &word, vector<vector<bool> > &visited,  int r, int c, int l, int R, int C, int L)
+    {
+        if(r<0 || r>=R || c<0 || c>=C)return false;
+        if(visited[r][c])return false;
+        if(word[l]!=board[r][c])return false;
+        if(l+1==L)return true;
+        visited[r][c]=true;
+        if( help(board,word,visited,r-1,c,l+1,R,C,L) ||
+            help(board,word,visited,r,c-1,l+1,R,C,L) ||
+            help(board,word,visited,r+1,c,l+1,R,C,L) ||
+            help(board,word,visited,r,c+1,l+1,R,C,L) )return true;
+        visited[r][c]=false;
+        return false;
+    }
+};
 
 /*
 ZigZag Conversion
