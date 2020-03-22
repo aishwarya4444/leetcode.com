@@ -26,6 +26,37 @@ S and T consist of lowercase letters only.
 
 */
 
+// fast
+class Solution {
+public:
+    string customSortString(string S, string T) {
+        vector<bool> alpha(26, false);
+        vector<int> beta(26, 0);
+        string res;
+
+        for(auto chr: S) {
+            alpha[chr-'a'] = true;
+        }
+
+        for(auto chr: T) {
+            beta[chr-'a'] ++;
+            if(alpha[chr-'a'] == false) {
+                res +=  chr;
+            }
+        }
+
+        for(auto chr: S) {
+            while(beta[chr-'a']) {
+                res +=  chr;
+                beta[chr-'a']--;
+            }
+        }
+
+        return res;
+    }
+};
+
+// slow
 class Solution {
 public:
     string customSortString(string S, string T) {
