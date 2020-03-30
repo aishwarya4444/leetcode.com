@@ -31,6 +31,50 @@ Output: 6
  *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
  * };
  */
+
+class Solution {
+private:
+    bool nodeAbsent(int num, int d, TreeNode *node) {
+        for(int level = d-1; level >= 0; level--) {
+            if(num & (1<<level)) {
+                node = node->right;
+            } else {
+                node = node->left;
+            }
+        }
+        return node == NULL;
+    }
+public:
+    int countNodes(TreeNode* root) {
+        int d=0, lb, mid, ub;
+        TreeNode *node = root;
+
+        if(!root) {
+            return 0;
+        }
+
+        // find depth
+        while(node->left) {
+            d++;
+            node = node->left;
+        }
+
+        lb = (1<<d); // pow(2,d)
+        ub = (1<<(d+1)) - 1;
+
+        while(lb<=ub) {
+            mid = lb+(ub-lb)/2;
+            if(nodeAbsent(mid, d, root)) {
+                ub = mid-1;
+            } else {
+                lb = mid+1;
+            }
+        }
+
+        return lb-1;
+    }
+};
+/*
 class Solution {
 public:
     int countNodes(TreeNode* root) {
@@ -38,6 +82,7 @@ public:
         return 1+countNodes(root->left)+countNodes(root->right);
     }
 };
+*/
 
 /*
 class Solution {
