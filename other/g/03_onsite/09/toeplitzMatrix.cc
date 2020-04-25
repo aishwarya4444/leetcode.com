@@ -44,6 +44,25 @@ What if the matrix is so large that you can only load up a partial row into the 
 
 */
 
+// Solution 1
+class Solution {
+public:
+    bool isToeplitzMatrix(vector<vector<int>>& matrix) {
+        int r, c, R=matrix.size(), C=R?matrix[0].size():0;
+
+        for(r=1; r<R; r++) {
+            for(c=1; c<C; c++) {
+                if(matrix[r][c] != matrix[r-1][c-1]) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+};
+
+// Solution 2
 class Solution {
 public:
     bool check(vector<vector<int>>& matrix, int r, int c, int R, int C) {

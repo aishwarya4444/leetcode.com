@@ -34,6 +34,47 @@ target consists only of English lowercase letters.
 
 */
 
+// Solution 1
+class Solution {
+public:
+    string alphabetBoardPath(string target) {
+        string seq;
+        int x, y, srcR=0, srcC=0, destR, destC;
+
+        for(auto chr: target) {
+            destR = (chr-'a')/5;
+            destC = (chr-'a')%5;
+
+            x = destC-srcC;
+            y = destR-srcR;
+
+            // first handle less than cases
+            if(x<0) {
+                seq += string(abs(x), 'L');
+            }
+            if(y<0) {
+                seq += string(abs(y), 'U');
+            }
+            // then handle greater than cases
+            if(x>0) {
+                seq += string(x, 'R');
+            }
+            if(y>0) {
+                seq += string(y, 'D');
+            }
+
+            srcR = destR;
+            srcC = destC;
+
+
+            seq += '!';
+        }
+
+        return seq;
+    }
+};
+
+// Solution 2
 class Solution {
 public:
     string alphabetBoardPath(string target) {

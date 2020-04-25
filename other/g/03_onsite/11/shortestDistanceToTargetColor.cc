@@ -34,6 +34,80 @@ queries[i].length == 2
 
 */
 
+// Solution 1
+class Solution {
+public:
+    vector<int> shortestDistanceColor(vector<int>& colors, vector<vector<int>>& queries) {
+        int dist, n, N=colors.size(), N2=2*N;
+        int one=-N2, two=-N2, three=-N2;
+        int left, right, index, color;
+        vector<int> res;
+        vector<vector<int>> lr(3, vector<int>(N, 0)), rl(3, vector<int>(N, 0));
+
+
+        for(n=0; n<N; n++) {
+
+            switch (colors[n]) {
+                case 1:
+                    one = n;
+                    break;
+                case 2:
+                    two = n;
+                    break;
+                case 3:
+                    three = n;
+                    break;
+                default:
+                    break;
+            }
+
+            lr[0][n] = one;
+            lr[1][n] = two;
+            lr[2][n] = three;
+        }
+
+        one=N2, two=N2, three=N2;
+        for(n=N-1; n>=0; n--) {
+
+            switch (colors[n]) {
+                case 1:
+                    one = n;
+                    break;
+                case 2:
+                    two = n;
+                    break;
+                case 3:
+                    three = n;
+                    break;
+                default:
+                    break;
+            }
+
+            rl[0][n] = one;
+            rl[1][n] = two;
+            rl[2][n] = three;
+        }
+
+        for(auto query: queries) {
+            index = query[0];
+            color = query[1]-1;
+
+            left = lr[color][index];
+            right = rl[color][index];
+
+            dist = min(index-left, right-index);cout<<dist<<" ";
+            if(dist>N) {
+                dist = -1;
+            }
+
+            res.push_back(dist);
+        }
+
+        return res;
+    }
+};
+
+// Solution 2
 class Solution {
 public:
     vector<int> shortestDistanceColor(vector<int>& colors, vector<vector<int>>& queries) {
