@@ -75,7 +75,7 @@ public:
             }
         }
 
-        while(rows && cols) {
+        while(rows) {
             count = -1;
 
             start = n;

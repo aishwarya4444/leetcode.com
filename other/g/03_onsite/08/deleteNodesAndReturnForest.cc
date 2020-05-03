@@ -36,6 +36,69 @@ to_delete contains distinct values between 1 and 1000.
  *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
  * };
  */
+
+// Solution 1
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    vector<TreeNode*> delNodes(TreeNode* root, vector<int>& to_delete) {
+        vector<TreeNode*> res;
+        queue<pair<TreeNode*, TreeNode*> > q;
+        int n, l, m, r;
+        bool shouldDelete;
+        TreeNode *empty=NULL, *prev=NULL, *curr=root;
+        pair<TreeNode*, TreeNode*> node;
+        q.push(make_pair(prev, curr));
+        sort(to_delete.begin(), to_delete.end());
+        while(q.size()) {
+            node = q.front();
+            q.pop();
+            prev = node.first;
+            curr = node.second;
+
+            // binary search to check node has to be deleted
+            shouldDelete = false;
+            l = 0;
+            r = to_delete.size()-1;
+            while(l<=r) {
+                m = l+(r-l)/2;
+                if(to_delete[m]==curr->val) {
+                    shouldDelete = true;
+                    break;
+                } else if(to_delete[m]>curr->val) {
+                    r = m-1;
+                } else {
+                    l = m+1;
+                }
+            }
+
+            if(shouldDelete) {
+                if(curr->left) q.push(make_pair(empty, curr->left));
+                if(curr->right) q.push(make_pair(empty, curr->right));
+                if(prev) {
+                    if(prev->left == curr) prev->left = NULL;
+                    else prev->right = NULL;
+                }
+                // if(curr!=root) delete curr;
+            } else {
+                if(curr->left) q.push(make_pair(curr, curr->left));
+                if(curr->right) q.push(make_pair(curr, curr->right));
+                if(!prev) res.push_back(curr);
+            }
+        }
+        return res;
+    }
+};
+
+// Solution 2
 class Solution {
 public:
     vector<TreeNode*> delNodes(TreeNode* root, vector<int>& to_delete) {
