@@ -26,6 +26,45 @@ Explanation: "testemail@leetcode.com" and "testemail@lee.tcode.com" actually rec
 
 */
 
+// Solution 1
+class Solution {
+public:
+    int numUniqueEmails(vector<string>& emails) {
+        int n, N;
+        unordered_set<string> res;
+        char chr;
+        string newEmail;
+
+        for(auto email: emails) {
+            N = email.size();
+            newEmail = "";
+
+            // local
+            for(n=0; n<N; n++) {
+                chr = email[n];
+                if(chr == '+' || chr == '@') {
+                    break;
+                }
+                if(chr == '.') {
+                    continue;
+                }
+                newEmail += chr;
+            }
+
+            while(n<N && email[n]!='@') {
+                n++;
+            }
+
+            // domain
+            newEmail += email.substr(n);
+            res.insert(newEmail);
+        }
+
+        return res.size();
+    }
+};
+
+// Solution 2
 class Solution {
 public:
     int numUniqueEmails(vector<string>& emails) {

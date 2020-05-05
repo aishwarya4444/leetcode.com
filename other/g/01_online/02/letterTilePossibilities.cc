@@ -24,6 +24,45 @@ tiles consists of uppercase English letters.
 
 */
 
+// Solution 1
+letter tile
+
+class Solution {
+public:
+    int numTilePossibilities(string tiles) {
+        vector<string> res;
+        unordered_set<string> m;
+        string word="", tmp;
+        int n, N=tiles.size(), x, start, end;
+
+        res.push_back(word);
+        for(n=0; n<N; n++) {
+            if(n>0 && tiles[n-1]==tiles[n]) {
+                start = end;
+            } else {
+                start = 0;
+            }
+            end = res.size();
+            for(start; start<end; start++) {
+                word = res[start];
+                for(x=0; x<=word.size(); x++) {
+                    tmp = word;
+                    tmp.insert(tmp.begin()+x, tiles[n]);
+
+                    if(m.count(tmp) == 0) {
+                        m.insert(tmp);
+                        res.push_back(tmp);
+                    }
+                }
+            }
+        }
+        // return m.size();
+        return res.size()-1;
+    }
+};
+
+
+// Solution 2
 class Solution {
 public:
     int numTilePossibilities(string tiles) {

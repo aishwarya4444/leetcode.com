@@ -19,6 +19,57 @@ Explanation: The next closest time choosing from digits 2, 3, 5, 9, is 22:22. It
 
 */
 
+// Solution 1
+class Solution {
+public:
+    string nextClosestTime(string time) {
+        vector<int> hrs, mins, nums = {time[0]-'0', time[1]-'0', time[3]-'0', time[4]-'0'};
+        map<int, pair<int, int> > m;
+        int num, tens, units;
+        string hour, minute;
+
+        for(tens=0; tens<4; tens++) {
+            for(units=0; units<4; units++) {
+                num = 10*nums[tens] + nums[units];
+                if(num<24) {
+                    hrs.push_back(num);
+                }
+                if(num<60) {
+                    mins.push_back(num);
+                }
+            }
+        }
+
+        for(auto hr: hrs) {
+            for(auto min: mins) {
+                num = 60*hr + min;
+                m[num] = make_pair(hr, min);
+            }
+        }
+
+        num = (10*nums[0]+nums[1])*60 + (10*nums[2]+nums[3]);
+        auto index = m.upper_bound(num);
+
+        if(index == m.end()) {
+            index = m.begin();
+        }
+
+        hour = to_string((*index).second.first);
+        minute = to_string((*index).second.second);
+
+        if(hour.size() == 1) {
+            hour = '0'+hour;
+        }
+        if(minute.size() == 1) {
+            minute = '0'+minute;
+        }
+
+        return hour + ':' + minute;
+
+    }
+};
+
+// Solution 2
 class Solution {
 public:
     string nextClosestTime(string time) {
