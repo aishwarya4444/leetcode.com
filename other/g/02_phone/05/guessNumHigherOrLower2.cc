@@ -25,6 +25,32 @@ Given a particular n ≥ 1, find out how much money you need to have to guarante
 
 */
 
+// Solution 1
+class Solution {
+public:
+    int getMoneyAmount(int n) {
+        vector<vector<int> > dp(n+1, vector<int>(n+1, 0));
+        int l, r, i, cost;
+
+        for(l=n-1; l>=1; l--) {
+            for(r=l+1; r<=n; r++) {
+                if(r-l == 1) {
+                    dp[l][r] = min(l, r);
+                } else {
+                    cost = INT_MAX;
+                    for(i=l+1; i<=r-1; i++) {
+                        cost = min(cost, i+max(dp[l][i-1], dp[i+1][r]) );
+                    }
+                    dp[l][r] = cost;
+                }
+            }
+        }
+
+        return dp[1][n];
+    }
+};
+
+// Solution 2
 class Solution {
 public:
     int getMoneyAmount(int n) {
