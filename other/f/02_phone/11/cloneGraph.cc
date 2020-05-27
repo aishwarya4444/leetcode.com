@@ -81,24 +81,28 @@ public:
 class Solution {
 public:
     Node* cloneGraph(Node* node) {
-        unordered_map<Node*, Node*> copy;
+        Node *par;
+        unordered_map<Node*, Node*> clone;
         queue<Node*> q;
-        Node *tmp;
+
         if(node) {
+            clone[node] = new Node(node->val);
             q.push(node);
-            copy[node] = new Node(node->val);
         }
+
         while(q.size()) {
-            tmp = q.front();
+            par = q.front();
             q.pop();
-            for(auto vertex: tmp->neighbors) {
-                if(copy.find(vertex) == copy.end()) {
-                    copy[vertex] = new Node(vertex->val);
-                    q.push(vertex);
+
+            for(auto child: par->neighbors) {
+                if(clone.find(child) == clone.end()) {
+                    clone[child] = new Node(child->val);
+                    q.push(child);
                 }
-                copy[tmp]->neighbors.push_back(copy[vertex]);
+                clone[par]->neighbors.push_back(clone[child]);
             }
         }
-        return node ? copy[node] : node;
+
+        return node ? clone[node] : node;
     }
 };

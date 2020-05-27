@@ -22,8 +22,38 @@ What if the given array is already sorted? How would you optimize your algorithm
 What if nums1's size is small compared to nums2's size? Which algorithm is better?
 What if elements of nums2 are stored on disk, and the memory is limited such that you cannot load all elements into the memory at once?
 
+https://leetcode.com/problems/intersection-of-two-arrays-ii/
+https://leetcode.com/problems/intersection-of-three-sorted-arrays/
+
 */
 
+// Solution 1
+class Solution {
+public:
+    vector<int> intersect(vector<int>& nums1, vector<int>& nums2) {
+        int n1=0, n2=0, N1=nums1.size(), N2=nums2.size();
+        vector<int> res;
+
+        sort(nums1.begin(), nums1.end());
+        sort(nums2.begin(), nums2.end());
+
+        while(n1<N1 && n2<N2) {
+            if(nums1[n1]==nums2[n2]) {
+                res.push_back(nums1[n1]);
+                n1++;
+                n2++;
+            } else if(nums1[n1]<nums2[n2]) {
+                n1++;
+            } else {
+                n2++;
+            }
+        }
+
+        return res;
+    }
+};
+
+// Solution 2
 class Solution {
 public:
     vector<int> intersect(vector<int>& nums1, vector<int>& nums2) {

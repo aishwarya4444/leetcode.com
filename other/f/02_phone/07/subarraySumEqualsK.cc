@@ -17,17 +17,15 @@ The range of numbers in the array is [-1000, 1000] and the range of the integer 
 class Solution {
 public:
     int subarraySum(vector<int>& nums, int k) {
-        // subarray sum equals K
         unordered_map<int,int>store;
-        store[0] = 1;
-        int sum = 0;
-        int ans = 0;
+        int sum = 0, ans = 0;
+
         for(int i = 0; i < nums.size(); i++){
+            store[sum]++;
             sum += nums[i];
             if(store.count(sum-k)){
                 ans += store[sum-k];
             }
-            store[sum]++;
         }
         return ans;
     }
