@@ -20,7 +20,7 @@ Output: 1->1->2->3->4->4
  * };
  */
 
-// without splice
+// with splice
 class Solution {
 public:
     ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
@@ -56,23 +56,19 @@ public:
             }
         }
 
-        while(l1) {
+        if(l1) {
             tmp->next = l1;
-            tmp = tmp->next;
-            l1 = l1->next;
         }
 
-        while(l2) {
+        if(l2) {
             tmp->next = l2;
-            tmp = tmp->next;
-            l2 = l2->next;
         }
 
         return head;
     }
 };
 
-// with splice
+// without splice
 class Solution {
 private:
     void addEnd(ListNode **head, int num) {

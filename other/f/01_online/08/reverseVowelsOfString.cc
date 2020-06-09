@@ -17,19 +17,19 @@ The vowels does not include the letter "y".
 class Solution {
 public:
     string reverseVowels(string s) {
-        unordered_set<char> vowels;
+        unordered_set<char> vowels = {'a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'};
         int start=0, end=s.size()-1;
 
-        vowels.insert('a');
-        vowels.insert('e');
-        vowels.insert('i');
-        vowels.insert('o');
-        vowels.insert('u');
-        vowels.insert('A');
-        vowels.insert('E');
-        vowels.insert('I');
-        vowels.insert('O');
-        vowels.insert('U');
+        // vowels.insert('a');
+        // vowels.insert('e');
+        // vowels.insert('i');
+        // vowels.insert('o');
+        // vowels.insert('u');
+        // vowels.insert('A');
+        // vowels.insert('E');
+        // vowels.insert('I');
+        // vowels.insert('O');
+        // vowels.insert('U');
 
         while(start<end) {
             while(start<end && vowels.count(s[start])==0) {

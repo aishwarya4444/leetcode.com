@@ -83,6 +83,63 @@ Output:
  *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
  * };
  */
+
+// Solution 1
+class Solution {
+private:
+    struct nodeState {
+        TreeNode *node;
+        int axis;
+        nodeState(TreeNode *n, int a) {
+            node = n;
+            axis = a;
+        }
+    };
+public:
+    vector<vector<int>> verticalOrder(TreeNode* root) {
+        unordered_map<int, vector<int> > m;
+        int minAxis, maxAxis;
+        vector<vector<int>> res;
+        queue<nodeState> q;
+        int axis;
+        TreeNode *node;
+
+        if(root) {
+            q.push({root, 0});
+        } else {
+            return res;
+        }
+
+        minAxis = 0;
+        maxAxis = 0;
+
+        while(q.size()) {
+            node = q.front().node;
+            axis = q.front().axis;
+            q.pop();
+
+            minAxis = min(minAxis, axis);
+            maxAxis = max(maxAxis, axis);
+
+            m[axis].push_back(node->val);
+
+            if(node->left) {
+                q.push({node->left, axis-1});
+            }
+            if(node->right) {
+                q.push({node->right, axis+1});
+            }
+        }
+
+        for(axis=minAxis; axis<=maxAxis; axis++) {
+            res.push_back(m[axis]);
+        }
+
+        return res;
+    }
+};
+
+// Solution 2
 class Solution {
 private:
     map<int, vector< pair<int, int> > > m;

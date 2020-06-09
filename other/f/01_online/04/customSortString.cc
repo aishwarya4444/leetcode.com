@@ -26,7 +26,31 @@ S and T consist of lowercase letters only.
 
 */
 
-// fast
+// fast Solution 1
+class Solution {
+public:
+    string customSortString(string S, string T) {
+        unordered_map<char, int> mt;
+        string res;
+
+        for(auto chr: T) {
+            mt[chr]++;
+        }
+
+        for(auto chr: S) {
+            res += string(mt[chr], chr);
+            mt.erase(chr);
+        }
+
+        for(auto entry: mt) {
+            res += string(entry.second, entry.first);
+        }
+
+        return res;
+    }
+};
+
+// fast Solution 2
 class Solution {
 public:
     string customSortString(string S, string T) {

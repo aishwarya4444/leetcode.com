@@ -16,6 +16,7 @@ NOTE: input types have been changed on April 15, 2019. Please reset to default c
 
 */
 
+// Solution 1
 class Solution {
 private:
     struct compareAscending {
@@ -56,5 +57,57 @@ public:
         }
 
         return minRooms;
+    }
+};
+
+// Solution 2
+class Solution {
+private:
+    struct compareMin {
+        bool operator()(int &n1, int &n2) {
+            return n1 > n2;
+        }
+    };
+
+public:
+    int minMeetingRooms(vector<vector<int>>& intervals) {
+        // min heap
+        priority_queue<int, vector<int>, compareMin > rooms;
+        int minRooms = 0, start, end;
+
+        sort(intervals.begin(), intervals.end());
+
+        for(auto interval: intervals) {
+            start = interval[0];
+            end = interval[1];
+             while(rooms.size() && start>=rooms.top()) {
+                rooms.pop();
+            }
+            rooms.push(end);
+            minRooms = max(minRooms, (int)rooms.size());
+        }
+
+        return minRooms;
+    }
+};
+
+// Solution 3
+class Solution {
+public:
+    int minMeetingRooms(vector<vector<int>>& intervals) {
+        map<int, int> meet;
+        int sum = 0, rooms = 0;
+
+        for(auto i: intervals) {
+            meet[i[0]]++;
+            meet[i[1]]--;
+        }
+
+        for(auto m: meet) {
+            sum += m.second;
+            rooms = max(rooms, sum);
+        }
+
+        return rooms;
     }
 };

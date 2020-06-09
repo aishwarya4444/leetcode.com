@@ -39,6 +39,37 @@ The tree will have between 1 and 100 nodes.
  *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
  * };
  */
+
+// Solution 1
+class Solution {
+public:
+    bool isCompleteTree(TreeNode* root) {
+        queue<TreeNode*> q;
+        bool expected = true;
+        if(root) {
+            q.push(root);
+        }
+        while(q.size()) {
+            root = q.front();
+            q.pop();
+            if(root->left) {
+                if(!expected) return false;
+                q.push(root->left);
+            } else {
+                expected = false;
+            }
+            if(root->right) {
+                if(!expected) return false;
+                q.push(root->right);
+            } else {
+                expected = false;
+            }
+        }
+        return true;
+    }
+};
+
+// Solution 2
 class Solution {
 public:
     bool isCompleteTree(TreeNode* root) {

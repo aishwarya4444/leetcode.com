@@ -16,6 +16,8 @@ The string will only contain lowercase characters a-z. The maximum length of the
 
 */
 
+// https://leetcode.com/problems/valid-palindrome-iii/
+
 class Solution {
 private:
     vector<vector<int> > dp;

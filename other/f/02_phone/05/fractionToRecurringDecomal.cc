@@ -26,19 +26,13 @@ Output: "0.(6)"
 class Solution {
 public:
     string fractionToDecimal(int numerator, int denominator) {
-        long n=numerator, d=denominator;
+        long n=labs(numerator), d=labs(denominator);
         string res="";
         unordered_map<long, int> nums;
         bool added=false;
 
-        if(d<0) {
-            d *= -1;
-            n *= -1;
-        }
-
-        if(n<0) {
+        if((numerator<0 ^ denominator<0) && n) {
             res = '-';
-            n *= -1;
         }
 
         if(n>=d) {
