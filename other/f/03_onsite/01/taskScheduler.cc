@@ -56,8 +56,8 @@ public:
       }
 
       if(waitList.size()) {
-            intervalCount += n+1;
-            while(waitList.size()) {
+          intervalCount += n+1;
+          while(waitList.size()) {
             maxHeap.push(waitList.front());
             waitList.pop();
           }

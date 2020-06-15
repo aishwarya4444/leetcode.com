@@ -21,6 +21,29 @@ Output: false
 
 */
 
+// Solution 1
+class Solution {
+public:
+    bool isStrobogrammatic(string num) {
+        unordered_map<char, char> mirror = {{'0', '0'}, {'1', '1'}, {'6', '9'}, {'9', '6'}, {'8', '8'}};
+        int start=0, end=num.size()-1;
+
+        while(start<=end) {
+            if(mirror.count(num[start]) == 0) {
+                return false;
+            }
+            if(mirror[num[start]] != num[end]) {
+                return false;
+            }
+            start++;
+            end--;
+        }
+
+        return true;
+    }
+};
+
+// Solution 2
 class Solution {
 public:
     bool isStrobogrammatic(string num) {

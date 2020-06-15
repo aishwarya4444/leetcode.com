@@ -34,6 +34,7 @@ Note: Do not use class member/global/static variables to store states. Your seri
  */
 
 // https://leetcode.com/problems/serialize-and-deserialize-bst/
+// https://leetcode.com/problems/serialize-and-deserialize-n-ary-tree/
 
 class Codec {
 public:
@@ -42,28 +43,19 @@ public:
     string serialize(TreeNode* root) {
         string data;
         queue<TreeNode*> q;
-        int N;
         TreeNode *node;
 
-        if(root) {
-            q.push(root);
-        } else {
-            data = "null";
-            return data;
-        }
+        q.push(root);
 
         while(q.size()) {
-            N = q.size();
-            while(N--) {
-                node = q.front();
-                q.pop();
-                if(node) {
-                    data += to_string(node->val)+",";
-                    q.push(node->left);
-                    q.push(node->right);
-                } else {
-                    data += "null,";
-                }
+            node = q.front();
+            q.pop();
+            if(node) {
+                data += to_string(node->val)+",";
+                q.push(node->left);
+                q.push(node->right);
+            } else {
+                data += "null,";
             }
         }
 
@@ -75,11 +67,10 @@ public:
     TreeNode* deserialize(string data) {
         TreeNode *root = NULL, *node;
         queue<TreeNode*> q;
-        stringstream stream(data);
+        stringstream ss(data);
         string token;
-        int N;
 
-        getline(stream, token, ',');
+        getline(ss, token, ',');
 
         if(token == "null") {
             return root;
@@ -88,21 +79,18 @@ public:
         }
         q.push(root);
 
-        while(!stream.eof()) {
-            N = q.size();
-            while(N--) {
-                node = q.front();
-                q.pop();
-                getline(stream, token, ',');
-                if(token != "null") {
-                    node->left = new TreeNode(stoi(token));
-                    q.push(node->left);
-                }
-                getline(stream, token, ',');
-                if(token != "null") {
-                    node->right = new TreeNode(stoi(token));
-                    q.push(node->right);
-                }
+        while(!ss.eof()) {
+            node = q.front();
+            q.pop();
+            getline(ss, token, ',');
+            if(token != "null") {
+                node->left = new TreeNode(stoi(token));
+                q.push(node->left);
+            }
+            getline(ss, token, ',');
+            if(token != "null") {
+                node->right = new TreeNode(stoi(token));
+                q.push(node->right);
             }
         }
 

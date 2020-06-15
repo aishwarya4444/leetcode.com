@@ -45,32 +45,27 @@ public:
         // RED = 1
         // BLUE = 2
         // No Colour = 0
-        int parent, colour, P=graph.size();
-        unordered_map<int, int> nodes;
+        int node, parent, colour, P=graph.size();
+        unordered_map<int, int> nodeColour;
         vector<bool> visited(P, false);
         queue<int> q;
 
-        for(parent=0; parent<P; parent++) {
-            if(graph[parent].size()) {
-                nodes[parent] = 0;
+        for(node=0; node<P; node++) {
+            if(graph[node].size() == 0) {
+                continue;
             }
-        }
 
-        for(auto entry: nodes) {
-            parent = entry.first;
-            colour = entry.second;
-
-            if(colour) {
+            if(nodeColour[node]) {
                 continue;
             }
 
             // assign RED to node with no colour
-            nodes[parent] = 1;
-            q.push(parent);
+            nodeColour[node] = 1;
+            q.push(node);
 
             while(q.size()) {
                 parent = q.front();
-                colour = nodes[parent];
+                colour = nodeColour[parent];
                 q.pop();
 
                 if(visited[parent]) {
@@ -86,19 +81,19 @@ public:
                     // if parent is of RED colour
                     if(colour == 1) {
                         // child sholud be BLUE
-                        if(nodes[child] == 1) {
+                        if(nodeColour[child] == 1) {
                             return false;
                         }
-                        nodes[child] = 2;
+                        nodeColour[child] = 2;
                         q.push(child);
                     }
                     // if parent is of BLUE colour
                     else {
                         // child should be RED
-                        if(nodes[child] == 2) {
+                        if(nodeColour[child] == 2) {
                             return false;
                         }
-                        nodes[child] = 1;
+                        nodeColour[child] = 1;
                         q.push(child);
                     }
                 }
